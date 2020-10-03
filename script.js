@@ -26,9 +26,3 @@ btFind.addEventListener('click', async () => {
   const map = document.querySelector('iframe');
   map.src = baseURL;
 });
-
-//  setTimeout(() => {
-//   document.querySelector('iframe > ').style.display = 'none';
-// //   document.querySelector('.gm-inset').style.display = 'none';
-//  }, 1000)
- 
