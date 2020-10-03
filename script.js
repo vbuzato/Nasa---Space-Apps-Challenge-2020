@@ -1,19 +1,4 @@
-function fetchData(city) {
-  const params = {
-    auth: '31727618108010456649x17679',
-    locate: 'São Paulo',
-    json: '1'
-  }
-  
-  axios.get('https://geocode.xyz', {params})
-    .then(response => {
-      console.log(`Latitude: ${response.data.latt}`);
-      console.log(`Longitude: ${response.data.longt}`);
-      //return response.data;
-    }).catch(error => {
-      console.log(error);
-    });
-}
+import { fetchData } from './geoapi';
 
 const latitude = '-29.3458742';
 const longitude = '-15.6940431';
@@ -22,9 +7,10 @@ const baseURL = `https://www.google.com/maps/embed?pb=!1m10!1m8!1m3!1d14726403.9
 const btFind = document.querySelector('.bt-find');
 btFind.addEventListener('click', async () => {
   const city = document.querySelector('#input-city').value;
-  console.log(city);
-  const map = document.querySelector('iframe');
-  map.src = baseURL;
+  const result = fetchData(city);
+  console.log(result);
+  // const map = document.querySelector('iframe');
+  // map.src = baseURL;
 });
 
 //  setTimeout(() => {
