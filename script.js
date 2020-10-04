@@ -1,5 +1,5 @@
-let latt;
-let longt;
+let latt = 0;
+let longt = 0;
 
 async function fetchData(address) {
   const editedAddress = address.replace(' ', '+');
@@ -11,18 +11,48 @@ async function fetchData(address) {
   
   const fetchGeocode =  await fetch(`https://geocode.xyz/Hauptstr.,+${editedAddress}?json=1`, { params });
   const response = await fetchGeocode.json();
+  latt = response.latt;
+  longt = response.longt;
   console.log(`Latitude: ${response.latt}`);
   console.log(`Longitude: ${response.longt}`);
   console.log(`Tudo: ${JSON.stringify(response)}`);
+  //const map = L.map('map').panTo([latt, longt], 3);
+  // renderMap()
+}
+function updateMapState() {
+  const address = document.querySelector('#input-address').value;
+  fetchData(address);
 }
 
 const btFind = document.querySelector('.bt-find');
-btFind.addEventListener('click', async () => {
-  
-  const address = document.querySelector('#input-city').value;
-  fetchData(address);
+btFind.addEventListener('click', () => updateMapState());
+const inputFind = document.querySelector('#input-address');
+inputFind.addEventListener('keydown', (e) => { if (e.keyCode === 13) updateMapState() });
 
-  const baseURL = `https://www.google.com/maps/embed?pb=!1m10!1m8!1m3!1d14726403.993844409!2d${latt}!3d${longt}!3m2!1i1024!2i768!4f13.1!5e0!3m2!1spt-BR!2sbr!4v1601728945839!5m2!1spt-BR!2sbr`
-  const map = document.querySelector('iframe');
-  map.src = baseURL;
-});
+function renderMap() {
+  const map = L.map('map').center([latt, longt], 3);
+  let marker;
+  if (latt !== 0 && longt !== 0) {
+    const mapContent = document.querySelector('#map').innerHTML = '';
+    marker = L.marker([latt, longt]).addTo(map);
+  }
+}
+
+function initialRenderMap() {
+  const map = L.map('map').setView([latt, longt], 3);
+  let marker;
+  if (latt !== 0 && longt !== 0) {
+    const mapContent = document.querySelector('#map').innerHTML = '';
+    marker = L.marker([latt, longt]).addTo(map);
+  }
+  
+  // https://api.maptiler.com/maps/hybrid/{z}/{x}/{y}.jpg?key=29nSLs65L7utfzxqP33a
+  // L.tileLayer('https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=29nSLs65L7utfzxqP33a', {
+  //   attribution: '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
+  // }).addTo(map);
+  
+  L.tileLayer('https://api.maptiler.com/maps/hybrid/{z}/{x}/{y}.jpg?key=29nSLs65L7utfzxqP33a', {
+    attribution: '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
+  }).addTo(map);
+}
+initialRenderMap();
